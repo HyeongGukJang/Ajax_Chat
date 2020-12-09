@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #box {
+            width: 300px;
+            height: 300px;
+            border: 1px solid red;
+            overflow: scroll;
+        }
+    </style>
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('form').submit(function(event) {
+                event.preventDefault();
+                var sender = this.sender.value;
+                var message = this.message.value;
+                var url = `http://localhost:3000/send?sender=${sender}&message=${message}`;
+                $.get(url, function(data, status) { });
+            });
+
+            var size = 0;
+            setInterval(function() {
+                var url = "http://localhost:3000/receive?size=" + size;
+                $.get(url, function(data, status) {
+                    if(data != "") {
+                        var obj = JSON.parse(data);
+                        size = obj["total"];
+                        var msgList = obj["newMsg"];
+                        for(msg of msgList) {
+                            $("#box").append(msg.sender + ":" + msg.message+"<br>");
+                        }
+                    }
+                });
+            }, 1000);
+        });
+    </script>
+</head>
+<body>
+    <h2>Ajax로 구현 채팅</h2>
+    <form>
+        <div id="box">
+            메세지를 입력 하세요!<br>
+        </div>
+        사용자: <input type="text" name="sender" value="micle"><br>
+        메세지: <input type="text" name="message" value="hello^^">
+        <input type="submit" value="전송">
+    </form>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script>
+        var size = 0;
+        $(document).ready(function(){
+            var url = "http://localhost:3000/count";
+            $.get(url, function(data, status) {
+                if(data != "") {
+                    var dataObj = JSON.parse(data);
+                    size = dataObj["cnt"];
+                    console.log(size, dataObj);
+                    $("#result").text(size);
+                }
+            });
+
+            var interval = setInterval(function() {
+                var resUrl = "http://localhost:3000/receive?size=" + size;
+                $.get(resUrl, function(data, status) {
+                    if(data != "") {
+                        var dataObj = JSON.parse(data);
+                        size = dataObj["cnt"];
+                        console.log(size, dataObj);
+                        $("#result").text(size);
+                    }
+                });
+            }, 1000);
+        });
+    </script>
+</head>
+<body>
+    <h1>카운트 : <span id="result">0</span></h1>
+</body>
+</html>
